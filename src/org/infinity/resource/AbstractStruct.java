@@ -24,6 +24,7 @@ import javax.swing.table.AbstractTableModel;
 
 import org.infinity.datatype.Editable;
 import org.infinity.datatype.InlineEditable;
+import org.infinity.datatype.ResourceRef;
 import org.infinity.datatype.SectionCount;
 import org.infinity.datatype.SectionOffset;
 import org.infinity.datatype.Unknown;
@@ -1182,5 +1183,24 @@ public abstract class AbstractStruct extends AbstractTableModel implements Struc
   public void fireTableRowsWillBeDeleted(int firstRow, int lastRow) {
     fireTableChanged(new TableModelEvent(this, firstRow, lastRow,
                          TableModelEvent.ALL_COLUMNS, WILL_BE_DELETE));
+  }
+
+  /**
+   * Returns image that represent this structure in the game if such image exists.
+   *
+   * @param attrName Name of field that contains {@link ResourceRef} to the icon resource
+   *
+   * @return Icon or {@code null} if referenced resource does not exist
+   *
+   * @throws IllegalArgumentException If specified attribute not exists, not {@link ResourceRef}
+   *         attribute or referenced resource not an icon resource
+   */
+  protected ResourceRef getResourceIcon(String attrName) throws IllegalArgumentException
+  {
+    final StructEntry field = getAttribute(attrName);
+    if (field instanceof ResourceRef) {
+      return (ResourceRef)field;
+    }
+    throw new IllegalArgumentException("Field '" + attrName + "' not a resource reference");
   }
 }
